@@ -1,0 +1,10 @@
+.Navbar-header {
+  background-color: #6F0564;
+  height: 6.5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: .75rem;
+  color: white;
+  padding-left: 1rem;
+}
