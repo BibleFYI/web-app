@@ -1,23 +1,19 @@
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+:root {
+  --color-bg: hsl(10, 21%, 95%);
+  --color-light: hsl(10, 21%, 95%);
+  --color-dark: hsl(240, 77%, 5%);
+  --color-text: hsl(12, 5%, 4%);
+  --color-theme: #6F0564;
 }
 
 .App-header {
-  background-color: hsl(10, 21%, 95%);
-  min-height: 93.5vh;
+  background-color: var(--color-bg);
+  min-height: calc(100vh - 3.5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: hsl(12, 5%, 4%);
+  color: var(--color-text);
   text-align: center;
 }
 

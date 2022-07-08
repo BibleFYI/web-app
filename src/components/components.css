@@ -1,6 +1,6 @@
 .Navbar-header {
-  background-color: #6F0564;
-  height: 6.5vh;
+  background-color: var(--color-theme);
+  height: 3.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;

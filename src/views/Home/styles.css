@@ -1,0 +1,13 @@
+.home-header {
+  color: var(--color-theme);
+}
+
+.form {
+  line-height: 1.0;
+  font-size: .5em;
+  margin: 1rem 0;
+  background: var(--color-theme);
+  padding: 1.0rem;
+  border-radius: 0.4rem;
+  color: var(--color-bg);
+}
