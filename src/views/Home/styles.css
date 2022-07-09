@@ -12,3 +12,9 @@
   border-radius: 0.4rem;
   color: var(--color-bg);
 }
+
+.scripture {
+  white-space: pre-line;
+  font-size: 1rem;
+  text-align: left;
+}

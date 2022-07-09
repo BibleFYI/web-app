@@ -11,21 +11,93 @@ export function Home(): JSX.Element {
   const [reference, setReference] = useState("");
   const [version, setVersion] = useState(VERSIONS.KJV);
 
-  const showPassage = () => {
-    const lastSpace = reference.lastIndexOf(' ');
-    let book = reference.slice(0, lastSpace);
+  function getBook(book: string) {
+    const bookKey = getBookKey(book);
+    if (bookKey === BOOKS.INVALID) {
+      throw Error(`Invalid reference. Cannot find book with name ${book}`);
+    }
+    return bookKey;
+  }
 
-    const passage = reference.slice(lastSpace + 1);
-    const lastColon = passage.lastIndexOf(':');
-    const chapter = parseInt(passage.slice(0, lastColon)) - 1;
-    const verse = parseInt(passage.slice(lastColon + 1)) - 1;
-    
-    book = getBookKey(book);
-    if (book === BOOKS.INVALID) {
-      throw Error;
+  function getChapterAndVerse(input: string[], book: BOOKS) {
+    let chapters: number[] = [];
+    let verses: number[] = [];
+    if (input.length === 1) {
+      // No spaces! Easy!
+      if (input[0].indexOf('-') > -1) {
+        // Has two requests!
+        const [first, second] = input[0].split('-');
+        // Do first one first.
+        let p = first.indexOf('.');
+        if (p > -1) {
+          chapters.push(parseInt(first.slice(0, p)));
+          verses.push(parseInt(first.slice(p + 1)));
+        } else {
+          chapters.push(parseInt(first));
+          verses.push(1);
+        }
+
+        // Do second one second.
+        p = second.indexOf('.');
+        if (p > -1) {
+          chapters.push(parseInt(second.slice(0, p)));
+          verses.push(parseInt(second.slice(p + 1)));
+        } else {
+          chapters.push(parseInt(second));
+          verses.push(parseInt(db[version][book].chapters[parseInt(second)].verses.length.toString()));
+        }
+
+        // Check if need to fill.
+        if (chapters[1] - chapters[0] < 0) {
+          throw Error("No verses in range!");
+        } else if (chapters[1] - chapters[0] === 0) {
+          if (verses[1] - verses[0] < 1) {
+            throw Error("No verses in range!");
+          } else {
+            for (let i=verses[0]+1; i < verses[1]; i++) {
+              verses.push(i);
+            }
+          }
+        } else {
+          // TODO: Implement this properly!
+          for (let i=verses[0]; i < verses[1]; i++) {
+            verses.push(i);
+          }
+        }
+      }
     }
 
-    setPassage(`Passage: ${db[version][book].chapters[chapter].verses[verse].text}`);
+    // TODO: If there is more than 1 input remaining. E.g. "John 1.1 - 1.2" 
+
+    return [chapters.sort((a,b) => a - b), verses.sort((a,b) => a - b)];
+  }
+
+  function getPassage(ref: string) : [BOOKS, number[], number[]] {
+    let input: string[] = ref.split(' ');
+    if (input.length <= 1) {
+      throw Error("Invalid reference. It appears you are missing a space between the book and chapter. Try '{BOOK} {CHAPTER}:{VERSE} - {CHAPTER}:{VERSE}");
+    }
+    const book = getBook(String(input.shift()));
+    let [chapters, verses] = getChapterAndVerse(input, book);
+
+    return [book, chapters, verses];
+  }
+
+  const showPassage = () => {
+    try {
+      const [book, chapters, verses] = getPassage(reference);
+      
+      let passage = ""
+      for (let i = chapters[0]; i <= chapters[chapters.length-1]; i++) {
+        for (let j = verses[0]; j <= verses[verses.length-1]; j++) {
+          passage += `${i}.${j}: ${db[version][book].chapters[i].verses[j].text}\n`;
+        }
+      }
+
+      setPassage(`${passage}`);
+    } catch (e) {
+      setPassage(`ERROR: ${e}`);
+    }
   }
 
   const handleChange = (event: { target: { name: string, value: any; }; }) => {
@@ -149,7 +221,7 @@ export function Home(): JSX.Element {
         <input type="submit" name="list_books" value="List all books and chapters"/>
       </form>
 
-      <p>{passage}</p>
+      <p className="scripture">{passage}</p>
     </div>
   );
 }
