@@ -1,16 +1,34 @@
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
+
 import "./styles.css"
+import * as db from "../../db";
+import { getBookKey } from "../../utils/scripture";
+import { BOOKS } from "../../utils/constants";
+import { VERSIONS } from "../../db/types";
 
 export function Home(): JSX.Element {
   const [passage, setPassage] = useState("");
   const [reference, setReference] = useState("");
-  const [version, setVersion] = useState("KJV");
+  const [version, setVersion] = useState(VERSIONS.KJV);
 
   const showPassage = () => {
-    setPassage(`Version: ${version} Reference: ${reference}`);
+    const lastSpace = reference.lastIndexOf(' ');
+    let book = reference.slice(0, lastSpace);
+
+    const passage = reference.slice(lastSpace + 1);
+    const lastColon = passage.lastIndexOf(':');
+    const chapter = parseInt(passage.slice(0, lastColon)) - 1;
+    const verse = parseInt(passage.slice(lastColon + 1)) - 1;
+    
+    book = getBookKey(book);
+    if (book === BOOKS.INVALID) {
+      throw Error;
+    }
+
+    setPassage(`Passage: ${db[version][book].chapters[chapter].verses[verse].text}`);
   }
 
-  const handleChange = (event: { target: { name: string, value: SetStateAction<string>; }; }) => {
+  const handleChange = (event: { target: { name: string, value: any; }; }) => {
     switch (event.target.name){
       case 'reference':
         setReference(event.target.value);
@@ -120,7 +138,7 @@ export function Home(): JSX.Element {
         <p></p>
         <label htmlFor="version">Version: 
           <select name="version" id="version" value={version} onChange={handleChange}>
-            <option selected value="KJV">King James Version</option>
+            <option value={VERSIONS.KJV}>King James Version</option>
             <option value="NRSV">New Revised Standard Version</option>
             <option value="NIV">New International Version</option>
           </select>

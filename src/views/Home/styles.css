@@ -3,6 +3,7 @@
 }
 
 .form {
+  display: inline-block;
   line-height: 1.0;
   font-size: .5em;
   margin: 1rem 0;
