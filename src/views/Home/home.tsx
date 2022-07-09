@@ -44,7 +44,7 @@ export function Home(): JSX.Element {
           verses.push(parseInt(second.slice(p + 1)));
         } else {
           chapters.push(parseInt(second));
-          verses.push(parseInt(db[version][book].chapters[parseInt(second)].verses.length.toString()));
+          verses.push(db[version][book].chapters[parseInt(second)].verses.length);
         }
 
         // Check if need to fill.
@@ -86,7 +86,8 @@ export function Home(): JSX.Element {
   const showPassage = () => {
     try {
       const [book, chapters, verses] = getPassage(reference);
-      
+      console.log(`book: ${book}, chapters: ${chapters}, verses: ${verses}`);
+
       let passage = ""
       for (let i = chapters[0]; i <= chapters[chapters.length-1]; i++) {
         for (let j = verses[0]; j <= verses[verses.length-1]; j++) {
