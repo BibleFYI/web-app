@@ -1,12 +1,35 @@
+import { SetStateAction, useState } from "react";
 import "./styles.css"
 
 export function Home(): JSX.Element {
+  const [passage, setPassage] = useState("");
+  const [reference, setReference] = useState("");
+  const [version, setVersion] = useState("KJV");
+
+  const showPassage = () => {
+    setPassage(`Version: ${version} Reference: ${reference}`);
+  }
+
+  const handleChange = (event: { target: { name: string, value: SetStateAction<string>; }; }) => {
+    switch (event.target.name){
+      case 'reference':
+        setReference(event.target.value);
+        break;
+      case 'version':
+        setVersion(event.target.value);
+    }
+  }
+
+  const urlSubmit = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+  }
+
   return (
     <div>
       <h1 className="home-header">The Holy Bible</h1>
-      <form className="form">
+      <form className="form" onSubmit={urlSubmit}>
         <label htmlFor="reference">Reference: 
-          <input list="chapters" id="reference" name="reference" placeholder="Enter reference, e.g. John 1.1-5" maxLength={1024} size={25}></input>
+          <input list="chapters" id="reference" name="reference" placeholder="Enter reference, e.g. John 1.1-5" maxLength={1024} size={25} value={reference} onChange={handleChange}></input>
         </label>
         <datalist id="chapters">
           <option value="Genesis"/>
@@ -96,17 +119,19 @@ export function Home(): JSX.Element {
 
         <p></p>
         <label htmlFor="version">Version: 
-          <select name="version" id="version">
+          <select name="version" id="version" value={version} onChange={handleChange}>
             <option selected value="KJV">King James Version</option>
             <option value="NRSV">New Revised Standard Version</option>
             <option value="NIV">New International Version</option>
           </select>
         </label>
-        
+
         <p></p>
-        <input type="submit" name="show" value="show passage"/>
+        <button onClick={showPassage}>Show Passage</button>
         <input type="submit" name="list_books" value="List all books and chapters"/>
       </form>
+
+      <p>{passage}</p>
     </div>
   );
 }
