@@ -112,7 +112,11 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
         rightC = parseInt(right.slice(0, rightP));
         rightV = parseInt(right.slice(rightP + 1));
       }
+
+      // Sanity checks
       if (leftV === 0) {leftV = 1};
+      if (db[version][book].chapters[leftC-1].verses.length < leftV) {leftV = db[version][book].chapters[leftC-1].verses.length}
+      if (db[version][book].chapters[rightC-1].verses.length < rightV) {rightV = db[version][book].chapters[leftC-1].verses.length}
 
       // Reference is form of "John 2-1"
       if (leftC > rightC) {
