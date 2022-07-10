@@ -1,3 +1,4 @@
+import { isVoidExpression } from "typescript";
 import * as db from "../../db"
 import { BOOKS, VERSIONS } from "../../utils/constants";
 import { getBookKey } from "../../utils/scripture";
@@ -27,9 +28,6 @@ export function getBook(book: string) : BOOKS {
  */
 export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQuery[] {
     let inputs: string[] = input.split(' ');
-    if (inputs.length <= 1) {
-      throw Error("Invalid reference. It appears you are missing a space between the book and chapter. Try '{BOOK} {CHAPTER}:{VERSE} - {CHAPTER}:{VERSE}");
-    }
 
     let bookString = inputs.shift();
     if (!Number.isNaN(Number(bookString))) {
@@ -43,8 +41,23 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
     const reference = inputs.join('');
     let queries: ScriptureQuery[] = [];
 
+    // Reference is form of "John"
+    if (inputs.length === 1) {
+      for (let i=0; i < db[version][book].chapters.length; i++) {
+        const query: ScriptureQuery = {
+          'book': book,
+          'chapter': i + 1, // Bible chapters are not indexed at 0, dummy.
+          'verses': []
+        }
+        for (let j=0; j < db[version][book].chapters[i].verses.length; j++) {
+          query.verses.push(j + 1);
+        }
+        queries.push(query);
+      }
+    }
+
     // Has one request. Reference is form of "John 1".
-    if (reference.indexOf('-') < 0) {
+    else if (reference.indexOf('-') < 0) {
       let p = reference.indexOf('.') < 0 ? reference.indexOf(':') : reference.indexOf('.');
       // Reference is form of "John 1.1".
       if (p > -1) {

@@ -25,7 +25,7 @@ export function Home(): JSX.Element {
 
       setPassage(`${passage}`);
     } catch (e) {
-      setPassage(`ERROR: ${e}`);
+      setPassage(`${e}`);
     }
   }
 

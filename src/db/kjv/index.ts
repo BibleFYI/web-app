@@ -61,7 +61,7 @@ import { Psalms } from './Psalms';
 import { Revelation } from './Revelation';
 import { Romans } from './Romans';
 import { Ruth } from './Ruth';
-import { Songs } from './SongofSolomon';
+import { Songs } from './SongOfSolomon';
 import { Titus } from './Titus';
 import { Zechariah } from './Zechariah';
 import { Zephaniah } from './Zephaniah';
