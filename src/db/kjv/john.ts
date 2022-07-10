@@ -1,7 +1,7 @@
 import { BOOKS, VERSIONS } from "../../utils/constants";
 import { Scripture } from "../types";
 
-export const John : Scripture = {
+export const John: Scripture = {
   "version": VERSIONS.KJV,
   "book": BOOKS.JOHN,
   "chapters": [
