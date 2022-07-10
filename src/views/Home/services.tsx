@@ -41,9 +41,10 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
     if (inputs.length === 1) {
       // Has one request. Reference is form of "John 1".
       if (inputs[0].indexOf('-') < 0) {
-        let p = inputs[0].indexOf('.');
+        let p = inputs[0].indexOf('.') < 0 ? inputs[0].indexOf(':') : inputs[0].indexOf('.');
         // Reference is form of "John 1.1".
         if (p > -1) {
+          console.log("Verse:", parseInt(inputs[0].slice(p + 1)));
           queries.push({
             'book': book,
             'chapter': parseInt(inputs[0].slice(0, p)),
@@ -67,8 +68,8 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
       // Has two requests. Reference is form of "John 1-2".
       else {
         const [left, right] = inputs[0].split('-');
-        const leftP = left.indexOf('.');
-        const rightP = right.indexOf('.');
+        const leftP = left.indexOf('.') < 0 ? left.indexOf(':') : left.indexOf('.')
+        const rightP = right.indexOf('.') < 0 ? right.indexOf(':') : right.indexOf('.');
         let leftC: number, leftV: number, rightC: number, rightV: number;
         // Left reference is form of "[John] 1"
         if (leftP < 0) {

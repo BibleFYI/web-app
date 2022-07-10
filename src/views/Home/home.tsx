@@ -13,25 +13,16 @@ export function Home(): JSX.Element {
   const showPassage = () => {
     try {
       const queries = getScriptureQuery(reference, version);
+      console.log("Queries:", queries);
 
       let passage = ""
       for (let i=0; i < queries.length; i++) {
         let query = queries[i]
         console.log(`Writing from book: ${query.book}, chapter: ${query.chapter}`);
         for (let j=0; j < query.verses.length; j++) {
-          passage += `${query.chapter}.${j+1}: ${db[version][query.book].chapters[query.chapter-1].verses[j].text}\n`
+          passage += `${query.chapter}.${query.verses[j]}: ${db[version][query.book].chapters[query.chapter-1].verses[query.verses[j]-1].text}\n`
         }
       }
-      /*for (let i = chapters[0]; i <= chapters[chapters.length-1]; i++) {
-        console.log(`Writing from chapter ${i}...`)
-        let maxVerses = db[version][book].chapters[i].verses.length - 1;
-        let max = verses[verses.length-1] > maxVerses ? maxVerses : verses[verses.length-1];
-        console.log(`maxVerses: ${maxVerses}, MAX: ${max}`);
-        for (let j = verses[0]; j <= max; j++) {
-          console.log(`Writing c: ${i}, v: ${j}`);
-          passage += `${i}.${j}: ${db[version][book].chapters[i].verses[j].text}\n`;
-        }
-      }*/
 
       setPassage(`${passage}`);
     } catch (e) {
