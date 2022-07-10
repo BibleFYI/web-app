@@ -1,4 +1,3 @@
-import { isVoidExpression } from "typescript";
 import * as db from "../../db"
 import { BOOKS, VERSIONS } from "../../utils/constants";
 import { getBookKey } from "../../utils/scripture";
@@ -42,7 +41,7 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
     let queries: ScriptureQuery[] = [];
 
     // Reference is form of "John"
-    if (inputs.length === 1) {
+    if (inputs.length === 0) {
       for (let i=0; i < db[version][book].chapters.length; i++) {
         const query: ScriptureQuery = {
           'book': book,
@@ -91,7 +90,7 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
       // Left reference is form of "[John] 1"
       if (leftP < 0) {
         leftC = parseInt(left);
-        leftV = 1;
+        leftV = 0;
       } // Left reference is form of "[John] 1.1" 
       else {
         leftC = parseInt(left.slice(0, leftP));
@@ -99,13 +98,21 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
       }
       // Right reference is form of "[John 1-]2"
       if (rightP < 0) {
-        rightC = parseInt(right);
-        rightV = db[version][book].chapters[rightC - 1].verses.length;
+        // reference is form of John 1.1-2
+        if (leftV !== 0) {
+          rightC = leftC;
+          rightV = parseInt(right);
+        } else // reference is form of John 1-2
+        {
+          rightC = parseInt(right);
+          rightV = db[version][book].chapters[rightC - 1].verses.length;
+        }
       } // Right reference is form of "[John 1-]2.1"
       else {
         rightC = parseInt(right.slice(0, rightP));
         rightV = parseInt(right.slice(rightP + 1));
       }
+      if (leftV === 0) {leftV = 1};
 
       // Reference is form of "John 2-1"
       if (leftC > rightC) {
