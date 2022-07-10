@@ -30,7 +30,12 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
     if (inputs.length <= 1) {
       throw Error("Invalid reference. It appears you are missing a space between the book and chapter. Try '{BOOK} {CHAPTER}:{VERSE} - {CHAPTER}:{VERSE}");
     }
-    const book = getBook(String(inputs.shift()));
+
+    let bookString = inputs.shift();
+    if (!Number.isNaN(Number(bookString))) {
+      bookString += " " + inputs.shift()!;
+    }
+    const book = getBook(String(bookString));
     if (!db[version][book]) {
       throw Error("Invalid reference. That book does not exist in the selected bible version");
     }
@@ -57,7 +62,7 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
           'verses': []
         };
         console.log(`length: ${db[version][book].chapters[query.chapter-1].verses.length}`)
-        for (let i = 0; i < db[version][book].chapters[query.chapter-1].verses.length; i++) {
+        for (let i = 1; i < db[version][book].chapters[query.chapter-1].verses.length + 1; i++) {
           query.verses.push(i);
         }
         queries.push(query);

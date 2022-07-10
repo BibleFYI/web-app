@@ -64,6 +64,16 @@ export function getBookKey(book: string) : BOOKS {
     case '1 sa':
     case '1 s':
     case '1 samuel':
+    case 'i sam':
+    case 'i sm':
+    case 'i sa':
+    case 'i s':
+    case 'i samuel':
+    case 'first sam':
+    case 'first sm':
+    case 'first sa':
+    case 'first s':
+    case 'first samuel':
       return BOOKS.FIRST_SAMUEL;
 
     case '2 sam':
@@ -71,6 +81,16 @@ export function getBookKey(book: string) : BOOKS {
     case '2 sa':
     case '2 s':
     case '2 samuel':
+    case 'ii sam':
+    case 'ii sm':
+    case 'ii sa':
+    case 'ii s':
+    case 'ii samuel':
+    case 'second sam':
+    case 'second sm':
+    case 'second sa':
+    case 'second s':
+    case 'second samuel':
       return BOOKS.SECOND_SAMUEL;
 
     case '1 kgs':
@@ -78,6 +98,16 @@ export function getBookKey(book: string) : BOOKS {
     case '1 ki':
     case '1 k':
     case '1 kings':
+    case 'i kgs':
+    case 'i kin':
+    case 'i ki':
+    case 'i k':
+    case 'i kings':
+    case 'first kgs':
+    case 'first kin':
+    case 'first ki':
+    case 'first k':
+    case 'first kings':
       return BOOKS.FIRST_KINGS;
 
     case '2 kgs':
@@ -85,16 +115,38 @@ export function getBookKey(book: string) : BOOKS {
     case '2 ki':
     case '2 k':
     case '2 kings':
+    case 'ii kgs':
+    case 'ii kin':
+    case 'ii ki':
+    case 'ii k':
+    case 'ii kings':
+    case 'second kgs':
+    case 'second kin':
+    case 'second ki':
+    case 'second k':
+    case 'second kings':
       return BOOKS.SECOND_KINGS;
 
     case '1 chr':
     case '1 ch':
     case '1 chronicles':
+    case 'i chr':
+    case 'i ch':
+    case 'i chronicles':
+    case 'first chr':
+    case 'first ch':
+    case 'first chronicles':
       return BOOKS.FIRST_CHRONICLES;
     
     case '2 chr':
     case '2 ch':
     case '2 chronicles':
+    case 'ii chr':
+    case 'ii ch':
+    case 'ii chronicles':
+    case 'second chr':
+    case 'second ch':
+    case 'second chronicles':
       return BOOKS.SECOND_CHRONICLES;
 
     case 'ezr':
@@ -124,10 +176,18 @@ export function getBookKey(book: string) : BOOKS {
 
     case '1 macc':
     case '1 maccabees':
+    case 'i macc':
+    case 'i maccabees':
+    case 'first macc':
+    case 'first maccabees':
       return BOOKS.FIRST_MACCABEES;
 
     case '2 macc':
     case '2 maccabees':
+    case 'ii macc':
+    case 'ii maccabees':
+    case 'second macc':
+    case 'second maccabees':
       return BOOKS.SECOND_MACCABEES;
 
     case 'jb':
@@ -299,11 +359,23 @@ export function getBookKey(book: string) : BOOKS {
     case '1 cor':
     case '1 co':
     case '1 corinthians':
+    case 'i cor':
+    case 'i co':
+    case 'i corinthians':
+    case 'first cor':
+    case 'first co':
+    case 'first corinthians':
       return BOOKS.FIRST_CORINTHIANS;
 
     case '2 cor':
     case '2 co':
     case '2 corinthians':
+    case 'ii cor':
+    case 'ii co':
+    case 'ii corinthians':
+    case 'second cor':
+    case 'second co':
+    case 'second corinthians':
       return BOOKS.SECOND_CORINTHIANS;
 
     case 'gal':
@@ -320,22 +392,50 @@ export function getBookKey(book: string) : BOOKS {
     case '1 thes':
     case '1 th':
     case '1 thessalonians':
+    case 'i thess':
+    case 'i thes':
+    case 'i th':
+    case 'i thessalonians':
+    case 'first thess':
+    case 'first thes':
+    case 'first th':
+    case 'first thessalonians':
       return BOOKS.FIRST_THESSALONIANS;
 
     case '2 thess':
     case '2 thes':
     case '2 th':
     case '2 thessalonians':
+    case 'ii thess':
+    case 'ii thes':
+    case 'ii th':
+    case 'ii thessalonians':
+    case 'second thess':
+    case 'second thes':
+    case 'second th':
+    case 'second thessalonians':
       return BOOKS.SECOND_THESSALONIANS;
 
     case '1 tim':
     case '1 ti':
     case '1 timothy':
+    case 'i tim':
+    case 'i ti':
+    case 'i timothy':
+    case 'first tim':
+    case 'first ti':
+    case 'first timothy':
       return BOOKS.FIRST_TIMOTHY;
 
     case '2 tim':
     case '2 ti':
     case '2 timothy':
+    case 'ii tim':
+    case 'ii ti':
+    case 'ii timothy':
+    case 'second tim':
+    case 'second ti':
+    case 'second timothy':
       return BOOKS.SECOND_TIMOTHY;
 
     case 'ti':
@@ -363,6 +463,16 @@ export function getBookKey(book: string) : BOOKS {
     case '1 pt':
     case '1 p':
     case '1 peter':
+    case 'i pet':
+    case 'i pe':
+    case 'i pt':
+    case 'i p':
+    case 'i peter':
+    case 'first pet':
+    case 'first pe':
+    case 'first pt':
+    case 'first p':
+    case 'first peter':
       return BOOKS.FIRST_PETER;
 
     case '2 pet':
@@ -370,24 +480,58 @@ export function getBookKey(book: string) : BOOKS {
     case '2 pt':
     case '2 p':
     case '2 peter':
+    case 'ii pet':
+    case 'ii pe':
+    case 'ii pt':
+    case 'ii p':
+    case 'ii peter':
+    case 'second pet':
+    case 'second pe':
+    case 'second pt':
+    case 'second p':
+    case 'second peter':
       return BOOKS.SECOND_PETER;
 
     case '1 jn':
     case '1 jhn':
     case '1 j':
     case '1 john':
+    case 'i jn':
+    case 'i jhn':
+    case 'i j':
+    case 'i john':
+    case 'first jn':
+    case 'first jhn':
+    case 'first j':
+    case 'first john':
       return BOOKS.FIRST_JOHN;
 
     case '2 jn':
     case '2 jhn':
     case '2 j':
     case '2 john':
+    case 'ii jn':
+    case 'ii jhn':
+    case 'ii j':
+    case 'ii john':
+    case 'second jn':
+    case 'second jhn':
+    case 'second j':
+    case 'second john':
       return BOOKS.SECOND_JOHN;
 
     case '3 jn':
     case '3 jhn':
     case '3 j':
     case '3 john':
+    case 'iii jn':
+    case 'iii jhn':
+    case 'iii j':
+    case 'iii john':
+    case 'third jn':
+    case 'third jhn':
+    case 'third j':
+    case 'third john':
       return BOOKS.THIRD_JOHN;
 
     case 'jud':
