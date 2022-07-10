@@ -35,24 +35,22 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
       throw Error("Invalid reference. That book does not exist in the selected bible version");
     }
     
-    let chapters: number[] = [];
-    let verses: number[] = [];
     let queries: ScriptureQuery[] = [];
 
+    // No spaces. Reference is form of "John 1-2" or "John 1"
     if (inputs.length === 1) {
-      // No spaces. Reference is form of "John 1-2" or "John 1"
+      // Has one request. Reference is form of "John 1".
       if (inputs[0].indexOf('-') < 0) {
-        // Has one request. Reference is form of "John 1".
         let p = inputs[0].indexOf('.');
+        // Reference is form of "John 1.1".
         if (p > -1) {
-          // Reference is form of "John 1.1".
           queries.push({
             'book': book,
             'chapter': parseInt(inputs[0].slice(0, p)),
             'verses': [parseInt(inputs[0].slice(p + 1))]
           })
-        } else {
-          // Reference is form of "John 1".
+        } // Reference is form of "John 1". 
+        else {
           const query: ScriptureQuery = {
             'book': book,
             'chapter': parseInt(inputs[0]),
@@ -66,46 +64,67 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
         }
       }
 
-      // No spaces. Query is form of "John 1-2" or "John 1"
-      if (inputs[0].indexOf('-') > -1) {
-        // Has two requests. Query is form of "John 1-2".
-        const [first, second] = inputs[0].split('-');
-        // Do first one first.
-        let p = first.indexOf('.');
-        if (p > -1) {
-          chapters.push(parseInt(first.slice(0, p)));
-          verses.push(parseInt(first.slice(p + 1)));
-        } else {
-          chapters.push(parseInt(first));
-          verses.push(1);
+      // Has two requests. Reference is form of "John 1-2".
+      else {
+        const [left, right] = inputs[0].split('-');
+        const leftP = left.indexOf('.');
+        const rightP = right.indexOf('.');
+        let leftC: number, leftV: number, rightC: number, rightV: number;
+        // Left reference is form of "[John] 1"
+        if (leftP < 0) {
+          leftC = parseInt(left);
+          leftV = 1;
+        } // Left reference is form of "[John] 1.1" 
+        else {
+          leftC = parseInt(left.slice(0, leftP));
+          leftV = parseInt(left.slice(leftP + 1));
+        }
+        // Right reference is form of "[John 1-]2"
+        if (rightP < 0) {
+          rightC = parseInt(right);
+          rightV = db[version][book].chapters[rightC - 1].verses.length;
+        } // Right reference is form of "[John 1-]2.1"
+        else {
+          rightC = parseInt(right.slice(0, rightP));
+          rightV = parseInt(right.slice(rightP + 1));
         }
 
-        // Do second one second.
-        p = second.indexOf('.');
-        if (p > -1) {
-          chapters.push(parseInt(second.slice(0, p)));
-          verses.push(parseInt(second.slice(p + 1)));
-        } else {
-          chapters.push(parseInt(second));
-          verses.push(db[version][book].chapters[parseInt(second)].verses.length);
+        // Reference is form of "John 2-1"
+        if (leftC > rightC) {
+          throw Error("Invalid reference. No verses in that range");
         }
+        // Reference is form of "John 1-2"
+        if (leftC < rightC) {
+          const leftQuery: ScriptureQuery = {
+            'book': book,
+            'chapter': leftC,
+            'verses': []
+          }
+          for (let i=leftV; i < db[version][book].chapters[leftC - 1].verses.length; i++) {
+            leftQuery.verses.push(i);
+          }
+          queries.push(leftQuery);
 
-        // Check if need to fill.
-        if (chapters[1] - chapters[0] < 0) {
-          throw Error("Invalid Reference. No verses in range!");
-        } else if (chapters[1] - chapters[0] === 0) {
-          if (verses[1] - verses[0] < 1) {
-            throw Error("Invalid Reference. No verses in range!");
-          } else {
-            for (let i=verses[0]+1; i < verses[1]; i++) {
-              verses.push(i);
-            }
+          const rightQuery: ScriptureQuery = {
+            'book': book,
+            'chapter': rightC,
+            'verses': []
           }
-        } else {
-          // TODO: Implement this properly!
-          for (let i=verses[0]; i < verses[1]; i++) {
-            verses.push(i);
+          for (let i=1; i <= rightV; i++) {
+            rightQuery.verses.push(i);
           }
+          queries.push(rightQuery);
+        } // Reference is form of "John 1-1"
+        else {
+          const query: ScriptureQuery = {
+            'book': book,
+            'chapter': leftC,
+            'verses': []
+          }
+          for (let i=leftV; i <= rightV; i++) {
+            query.verses.push(i);
+          }
+          queries.push(query);
         }
       }
     }
