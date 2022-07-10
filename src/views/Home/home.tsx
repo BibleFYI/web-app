@@ -18,7 +18,6 @@ export function Home(): JSX.Element {
       let passage = ""
       for (let i=0; i < queries.length; i++) {
         let query = queries[i]
-        console.log(`Writing from book: ${query.book}, chapter: ${query.chapter}`);
         for (let j=0; j < query.verses.length; j++) {
           passage += `${query.chapter}.${query.verses[j]}: ${db[version][query.book].chapters[query.chapter-1].verses[query.verses[j]-1].text}\n`
         }
