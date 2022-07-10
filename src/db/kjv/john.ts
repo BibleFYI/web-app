@@ -1,5 +1,5 @@
-import { BOOKS } from "../../utils/constants";
-import { Scripture, VERSIONS } from "../types";
+import { BOOKS, VERSIONS } from "../../utils/constants";
+import { Scripture } from "../types";
 
 export const John : Scripture = {
   "version": VERSIONS.KJV,

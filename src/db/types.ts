@@ -1,8 +1,4 @@
-import { BOOKS } from "../utils/constants";
-
-export enum VERSIONS {
-  KJV = 'KJV',
-}
+import { BOOKS, VERSIONS } from "../utils/constants";
 
 export type Scripture = {
   version: VERSIONS;

@@ -2,98 +2,36 @@ import { useState } from "react";
 
 import "./styles.css"
 import * as db from "../../db";
-import { getBookKey } from "../../utils/scripture";
-import { BOOKS } from "../../utils/constants";
-import { VERSIONS } from "../../db/types";
+import { VERSIONS } from "../../utils/constants";
+import { getScriptureQuery } from "./services";
 
 export function Home(): JSX.Element {
   const [passage, setPassage] = useState("");
   const [reference, setReference] = useState("");
   const [version, setVersion] = useState(VERSIONS.KJV);
 
-  function getBook(book: string) {
-    const bookKey = getBookKey(book);
-    if (bookKey === BOOKS.INVALID) {
-      throw Error(`Invalid reference. Cannot find book with name ${book}`);
-    }
-    return bookKey;
-  }
-
-  function getChapterAndVerse(input: string[], book: BOOKS) {
-    let chapters: number[] = [];
-    let verses: number[] = [];
-    if (input.length === 1) {
-      // No spaces! Easy!
-      if (input[0].indexOf('-') > -1) {
-        // Has two requests!
-        const [first, second] = input[0].split('-');
-        // Do first one first.
-        let p = first.indexOf('.');
-        if (p > -1) {
-          chapters.push(parseInt(first.slice(0, p)));
-          verses.push(parseInt(first.slice(p + 1)));
-        } else {
-          chapters.push(parseInt(first));
-          verses.push(1);
-        }
-
-        // Do second one second.
-        p = second.indexOf('.');
-        if (p > -1) {
-          chapters.push(parseInt(second.slice(0, p)));
-          verses.push(parseInt(second.slice(p + 1)));
-        } else {
-          chapters.push(parseInt(second));
-          verses.push(db[version][book].chapters[parseInt(second)].verses.length);
-        }
-
-        // Check if need to fill.
-        if (chapters[1] - chapters[0] < 0) {
-          throw Error("No verses in range!");
-        } else if (chapters[1] - chapters[0] === 0) {
-          if (verses[1] - verses[0] < 1) {
-            throw Error("No verses in range!");
-          } else {
-            for (let i=verses[0]+1; i < verses[1]; i++) {
-              verses.push(i);
-            }
-          }
-        } else {
-          // TODO: Implement this properly!
-          for (let i=verses[0]; i < verses[1]; i++) {
-            verses.push(i);
-          }
-        }
-      }
-    }
-
-    // TODO: If there is more than 1 input remaining. E.g. "John 1.1 - 1.2" 
-
-    return [chapters.sort((a,b) => a - b), verses.sort((a,b) => a - b)];
-  }
-
-  function getPassage(ref: string) : [BOOKS, number[], number[]] {
-    let input: string[] = ref.split(' ');
-    if (input.length <= 1) {
-      throw Error("Invalid reference. It appears you are missing a space between the book and chapter. Try '{BOOK} {CHAPTER}:{VERSE} - {CHAPTER}:{VERSE}");
-    }
-    const book = getBook(String(input.shift()));
-    let [chapters, verses] = getChapterAndVerse(input, book);
-
-    return [book, chapters, verses];
-  }
-
   const showPassage = () => {
     try {
-      const [book, chapters, verses] = getPassage(reference);
-      console.log(`book: ${book}, chapters: ${chapters}, verses: ${verses}`);
+      const queries = getScriptureQuery(reference, version);
 
       let passage = ""
-      for (let i = chapters[0]; i <= chapters[chapters.length-1]; i++) {
-        for (let j = verses[0]; j <= verses[verses.length-1]; j++) {
-          passage += `${i}.${j}: ${db[version][book].chapters[i].verses[j].text}\n`;
+      for (let i=0; i < queries.length; i++) {
+        let query = queries[i]
+        console.log(`Writing from book: ${query.book}, chapter: ${query.chapter}`);
+        for (let j=0; j < query.verses.length; j++) {
+          passage += `${query.chapter}.${j+1}: ${db[version][query.book].chapters[query.chapter-1].verses[j].text}\n`
         }
       }
+      /*for (let i = chapters[0]; i <= chapters[chapters.length-1]; i++) {
+        console.log(`Writing from chapter ${i}...`)
+        let maxVerses = db[version][book].chapters[i].verses.length - 1;
+        let max = verses[verses.length-1] > maxVerses ? maxVerses : verses[verses.length-1];
+        console.log(`maxVerses: ${maxVerses}, MAX: ${max}`);
+        for (let j = verses[0]; j <= max; j++) {
+          console.log(`Writing c: ${i}, v: ${j}`);
+          passage += `${i}.${j}: ${db[version][book].chapters[i].verses[j].text}\n`;
+        }
+      }*/
 
       setPassage(`${passage}`);
     } catch (e) {

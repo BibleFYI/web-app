@@ -1,3 +1,4 @@
+/** dbKey representations of books of the bible */
 export enum BOOKS {
   GENESIS = 'Genesis',
   EXODUS = 'Exodus',
@@ -74,4 +75,12 @@ export enum BOOKS {
   REVELATION = "Revelation",
   CANTICLES = "Canticles",
   INVALID = "Invalid",
+}
+
+/** dbKey representations of versions of the bible. A version is a translation, but as there may be 
+ * multiple prints of a translation with different notes or slight variations we call them 
+ * "VERSIONS".
+ */
+export enum VERSIONS {
+  KJV = 'KJV',
 }
