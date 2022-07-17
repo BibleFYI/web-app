@@ -119,6 +119,9 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
         if (leftV !== 0) {
           rightC = leftC;
           rightV = parseInt(right);
+          if (rightV < leftV) {
+            throw new InvalidReferenceRangeError(input);
+          }
         } else // reference is form of John 1-2
         {
           rightC = parseInt(right);
@@ -133,12 +136,13 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
       // Sanity checks
       if (leftV === 0) {leftV = 1};
       if (db[version][book].chapters[leftC-1].verses.length < leftV) {leftV = db[version][book].chapters[leftC-1].verses.length}
-      if (db[version][book].chapters[rightC-1].verses.length < rightV) {rightV = db[version][book].chapters[leftC-1].verses.length}
+      if (db[version][book].chapters[rightC-1].verses.length < rightV) {rightV = db[version][book].chapters[rightC-1].verses.length}
 
       // Reference is form of "John 2-1"
       if (leftC > rightC) {
         throw new InvalidReferenceRangeError(input);
       }
+
       // Reference is form of "John 1-2"
       if (leftC < rightC) {
         const leftQuery: ScriptureQuery = {
@@ -172,7 +176,8 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
         }
         queries.push(query);
       }
+      
+      console.log(`leftC: ${leftC}, leftV: ${leftV}\nrightC: ${rightC}, rightV: ${rightV}`);
     }
-
     return queries;
 }
