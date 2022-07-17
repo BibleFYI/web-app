@@ -1,6 +1,7 @@
 {
   "short_name": "bible-fyi",
   "name": "Bible FYI",
+  "description": "The most comprehensive bible tool on the web",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#6F0564",
+  "background_color": "hsl(10, 21%, 95%)"
 }
