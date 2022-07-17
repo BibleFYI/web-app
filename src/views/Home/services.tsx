@@ -1,6 +1,7 @@
 import * as db from "../../db"
 import { BOOKS, VERSIONS } from "../../utils/constants";
 import { getBookKey } from "../../utils/scripture";
+import { InvalidBookError, InvalidBookInVersionError, InvalidReferenceRangeError } from "./home.types";
 import { ScriptureQuery } from "./types";
 
 /**
@@ -13,7 +14,7 @@ import { ScriptureQuery } from "./types";
 export function getBook(book: string) : BOOKS {
   const bookKey = getBookKey(book);
   if (bookKey === BOOKS.INVALID) {
-    throw Error(`Invalid reference. Cannot find book with name ${book}`);
+    throw new InvalidBookError(book);
   }
   return bookKey;
 }
@@ -28,13 +29,29 @@ export function getBook(book: string) : BOOKS {
 export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQuery[] {
     let inputs: string[] = input.split(' ');
 
-    let bookString = inputs.shift();
-    if (!Number.isNaN(Number(bookString))) {
-      bookString += " " + inputs.shift()!;
+    let bookString = ""; //= inputs.shift();
+    while (true) {
+      if (inputs.length === 1) {
+        // Inputs is form of John
+        bookString += inputs.shift();
+        break;
+      } else if (Number.isNaN(Number(inputs[0][0])) && Number.isNaN(Number(inputs[1][0]))) { 
+        // Inputs[0][1] is form of First John
+        bookString += inputs.shift() + " ";
+      } else if (!Number.isNaN(Number(inputs[0][0])) && Number.isNaN(Number(inputs[1][0]))) { 
+        // Inputs[0][1] is form of 1 John
+        bookString += inputs.shift() + " ";
+      } else if (Number.isNaN(Number(inputs[0][0])) && !Number.isNaN(Number(inputs[1][0]))) {
+        // Inputs[0][1] is form of John 1
+        bookString += inputs.shift();
+        break;
+      } else {
+        break;
+      }
     }
     const book = getBook(String(bookString));
     if (!db[version][book]) {
-      throw Error("Invalid reference. That book does not exist in the selected bible version");
+      throw new InvalidBookInVersionError(book, version);
     }
     
     const reference = inputs.join('');
@@ -120,7 +137,7 @@ export function getScriptureQuery(input: string, version: VERSIONS) : ScriptureQ
 
       // Reference is form of "John 2-1"
       if (leftC > rightC) {
-        throw Error("Invalid reference. No verses in that range");
+        throw new InvalidReferenceRangeError(input);
       }
       // Reference is form of "John 1-2"
       if (leftC < rightC) {

@@ -4,6 +4,7 @@ import "./styles.css"
 import * as db from "../../db";
 import { VERSIONS } from "../../utils/constants";
 import { getScriptureQuery } from "./services";
+import { InvalidBookError, InvalidBookInVersionError, InvalidReferenceRangeError } from "./home.types";
 
 export function Home(): JSX.Element {
   const [passage, setPassage] = useState("");
@@ -25,7 +26,14 @@ export function Home(): JSX.Element {
 
       setPassage(`${passage}`);
     } catch (e) {
-      setPassage(`${e}`);
+      if (e instanceof InvalidBookInVersionError || e instanceof InvalidReferenceRangeError || e instanceof InvalidBookError) {
+        console.log(e.name);
+        setPassage(e.toString());
+      }
+      else {
+        console.warn(e);
+        setPassage(`Cannot find passage in ${reference}`);
+      }
     }
   }
 
